@@ -1,6 +1,6 @@
 import React from 'react'
 import './Question.css'
-import { useState , useEffect } from 'react'
+import { useState  , useRef , useEffect} from 'react'
 import ErrorMessage from "../Error/ErrorMessage"
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
@@ -17,39 +17,35 @@ function Question({currQuestion,
 
    const [selected, setSelected] = useState("")
    const [error, SetError]= useState(false)
-
+   const correctOptionRef = useRef(null);
 
    const navigate = useNavigate()
 
 
-   const handleSelect = (ele)=>{
-   if(selected === correct_option){
-    return "select"
-   }
-   else if (selected !== correct_option){
-    return "wrong"
-   }
-   else if (ele === correct_option){
-    return "select"
-   }
 
+  const handleCheck = (ele) => {
+    // Set the selected option
+    setSelected(ele);
 
-
-}
-
-  const handleCheck =(ele)=>{
-    // it will set the selected state (when user clicks on any of option, onClick will be called, in which a callback function is passed to set the selected state to this option)
-    setSelected(ele)
-    // checking that is this option(on which user has clicked)is same to correct_option, so increasing score value in this case.
-    if(ele === correct_option){
-       setScore(score+1)
+    console.log(ele, "handlecheck");
+    if(selected !== correct_option){
+      if (correctOptionRef.current) {
+        correctOptionRef.current.classList.add('correct');
+      }
     }
-    // since a option is selected ,so no error in this case (as user has selected a option) so, setting error state to false
+    // Check if the selected option is correct, and update the score
+    // Note: This will increase the score even if the user changes the selection to the correct option later
+    if (ele === correct_option) {
+      setScore(score + 1);
+    }
     SetError(false)
-  }
+  };
+
 
    const handleNext=()=>{
-    if (currQuestion > 8){
+    // selected option is empty for the next button 
+    setSelected("")
+    if (currQuestion == 9){
       navigate("/result")
     }else if(selected){
       setCurrQuestion(currQuestion+1)
@@ -84,15 +80,30 @@ function Question({currQuestion,
                      {/*to show buttons for each options */}
                      console.log(ele)
           return(
-            <button  onClick={()=>{handleCheck(ele)}} key={ele} className={`single-option ${selected && handleSelect(ele)}` } disabled={selected}>{ele}</button>
+            <button
+                onClick={() => handleCheck(ele)}
+                key={ele}
+                className={`single-option ${
+                  selected === ele
+                    ? correct_option === ele
+                      ? "correct"
+                      : "wrong"
+                    : ""
+                }`}
+                disabled={selected}
+                ref={ele === correct_option ? correctOptionRef : null}
+              >
+                {ele}
+              </button>
           )
          })}
 
        </div>
 
        <div className="controls">
-       <Button variant="contained" color='secondary' size='large' style={{width:185}} href='/' onClick={handleQuit}>Quit</Button>
-       <Button variant="contained" color='primary' size='large' style={{width:185}} onClick={handleNext}>Next Question</Button>
+       
+       <Button  variant="contained" color='primary' size='large' style={{width:185}} onClick={handleNext}>Next Question</Button>
+       <Button  variant="contained" color='secondary' size='large' style={{width:185}} href='/' onClick={handleQuit}>Quit</Button>
        </div>
 
       </div>

@@ -5,7 +5,7 @@ import Question from '../../Question/Question';
 
 function Quiz({name, questions , score, setQuestions, setScore}) {
   // options state is created to store the options
-  // currentQuestion is created to store the current question to be visible in Quiz page
+  // currentQuestion is created to store the index of current question to be visible in Quiz page
 
   const [currQuestion, setCurrQuestion]=useState(0)
   const [options,setOptions]=useState("")

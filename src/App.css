@@ -15,7 +15,7 @@ a{
 .app{
   background-image: url(../public/ques1.png);
    background-size: cover;
-  height: 98.5vh;
+  /* height: 98.5vh; */
   border: 8px solid #39445a93;
   margin: 5px;
   padding: 5px;
